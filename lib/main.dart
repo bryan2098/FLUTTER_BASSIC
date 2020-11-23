@@ -4,7 +4,14 @@ import './transaction.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(MaterialApp(
+    title: 'Transaction App',
+    home: MyApp(),
+    theme: ThemeData(
+      primaryColor: Colors.red,
+      accentColor: Colors.green,
+    ),
+  ));
 }
 
 class MyApp extends StatefulWidget {
@@ -142,31 +149,53 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         builder: (context) {
           return Column(
             children: <Widget>[
-              TextField(
-                decoration: InputDecoration(labelText: 'Content'),
-                controller: _contentController,
-                onChanged: (value) {
-                  setState(() {
-                    _transaction.content = value;
-                  });
-                },
+              Container(
+                child: TextField(
+                  decoration: InputDecoration(labelText: 'Content'),
+                  controller: _contentController,
+                  onChanged: (value) {
+                    setState(() {
+                      _transaction.content = value;
+                    });
+                  },
+                ),
+                padding: EdgeInsets.all(10),
               ),
-              TextField(
-                decoration: InputDecoration(labelText: 'Amount(money)'),
-                controller: _amountController,
-                onChanged: (value) {
-                  setState(() {
-                    _transaction.amount = double.tryParse(value) ?? 0;
-                  });
-                },
-              ),
-              RaisedButton(
-                onPressed: () => this.insertTransaction(),
-                child: Text('Save'),
-              ),
-              RaisedButton(
-                onPressed: () {},
-                child: Text('Cancel'),
+              Container(
+                  child: TextField(
+                    decoration: InputDecoration(labelText: 'Amount(money)'),
+                    controller: _amountController,
+                    onChanged: (value) {
+                      setState(() {
+                        _transaction.amount = double.tryParse(value) ?? 0;
+                      });
+                    },
+                  ),
+                  padding: EdgeInsets.all(10)),
+              Container(
+                padding: EdgeInsets.all(10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Expanded(
+                      child: RaisedButton(
+                        onPressed: () {
+                          this.insertTransaction();
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Save'),
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.only(left: 10)),
+                    Expanded(
+                        child: RaisedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('Cancel'),
+                    ))
+                  ],
+                ),
               )
             ],
           );
@@ -175,52 +204,51 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "This is my test",
-      home: Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          title: const Text('Transaction'),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                this._onBottomShowModalSheet();
-              },
-            )
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          tooltip: 'Add transaction',
-          child: Icon(Icons.add),
-          onPressed: () {
-            this._onBottomShowModalSheet();
-          },
-        ),
-        body: SafeArea(
-          minimum: const EdgeInsets.only(left: 20, right: 20),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                FlatButton(
-                  textColor: Colors.pink,
-                  child: Text('Insert transacion'),
-                  onPressed: () {
-                    this.insertTransaction();
-                    _scaffoldKey.currentState.showSnackBar(
-                      SnackBar(
-                        content: Text('Transaction list: ' + _transactions.toString()),
-                        duration: Duration(seconds: 3),
-                      ),
-                    );
-                  },
-                ),
-                TransactionList(
-                  transactions: _transactions,
-                ),
-              ],
-            ),
+    return Scaffold(
+      key: _scaffoldKey,
+      appBar: AppBar(
+        title: const Text('Transaction'),
+        backgroundColor: Theme.of(context).accentColor,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              this._onBottomShowModalSheet();
+            },
+          )
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        tooltip: 'Add transaction',
+        child: Icon(Icons.add),
+        backgroundColor: Theme.of(context).primaryColor,
+        onPressed: () {
+          this._onBottomShowModalSheet();
+        },
+      ),
+      body: SafeArea(
+        minimum: const EdgeInsets.only(left: 20, right: 20),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              FlatButton(
+                textColor: Colors.pink,
+                child: Text('Insert transacion'),
+                onPressed: () {
+                  this._onBottomShowModalSheet();
+                  // _scaffoldKey.currentState.showSnackBar(
+                  //   SnackBar(
+                  //     content: Text('Transaction list: ' + _transactions.toString()),
+                  //     duration: Duration(seconds: 3),
+                  //   ),
+                  // );
+                },
+              ),
+              TransactionList(
+                transactions: _transactions,
+              ),
+            ],
           ),
         ),
       ),
